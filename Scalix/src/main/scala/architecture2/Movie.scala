@@ -41,7 +41,3 @@ class Movie (val id: Int) {
     }
   }
 }
-
-object Movie{
-
-}

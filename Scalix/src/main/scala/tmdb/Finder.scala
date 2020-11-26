@@ -11,25 +11,34 @@ import java.nio.file.{Paths, Files}
 
 object Finder extends App{
   final val path_origin = "C:\\Users\\Khalil Mahfoudh\\IdeaProjects\\Scalix\\src\\data\\"
-  def findActorId(name: String, surname: String): Option[Int] = {
+  def findActorId(name: String, surname: String, cache_actor: collection.mutable.Map[(String, String), Int], cache_actor_indirect: collection.mutable.Map[Int, (String, String)]): Option[Int] = {
+    var id: Int = -1
+    cache_actor.get((name, surname)) match {
+      case None => {
+        try {
+          val request = Source.fromURL("https://api.themoviedb.org/3/search/person?api_key=0a3f9b1422abb8a0284f388056b138de&language=en-US&query=" +
+            name + "%20" + surname + "&page=1&include_adult=false")
+          val JSON = request.mkString
+          id = Integer.parseInt((parse(JSON) \ "results" \ "id").children.head.values.toString)
+          cache_actor += ((name, surname) -> id)
+          cache_actor_indirect += (id -> (name, surname))
+        }
+      }
+      case Some(cache_id) => {
+        id = cache_id
+      }
+    }
     try {
-      val request = Source.fromURL("https://api.themoviedb.org/3/search/person?api_key=0a3f9b1422abb8a0284f388056b138de&language=en-US&query=" +
-        name + "%20" + surname + "&page=1&include_adult=false")
-      val JSON = request.mkString
-      val id = Some(Integer.parseInt((parse(JSON) \ "results" \ "id").children.head.values.toString))
-
-      if (!Files.exists(Paths.get(path_origin+"actor" + id.value + ".txt"))){
+      if (!Files.exists(Paths.get(path_origin+"actor" + id + ".txt"))){
         println("Envoi de requete")
-        val request2 = Source.fromURL("https://api.themoviedb.org/3/person/" + id.value +
+        val request2 = Source.fromURL("https://api.themoviedb.org/3/person/" + id +
           "/movie_credits?api_key=0a3f9b1422abb8a0284f388056b138de&language=en-US")
         val JSON2 = request2.mkString
-        val out = new PrintWriter(path_origin+"actor" + id.value + ".txt")
+        val out = new PrintWriter(path_origin+"actor" + id + ".txt")
         out.write(JSON2)
         out.close()
       }
-
-      id
-
+    Some(id)
     } catch {
       case _: Exception => None
     }
@@ -91,10 +100,10 @@ object Finder extends App{
     }
   }
 
-  def request(actor1: FullName, actor2: FullName): Set[(String, String)] = {
+  def request(actor1: FullName, actor2: FullName, cache_actor: collection.mutable.Map[(String, String), Int], cache_actor_indirect: collection.mutable.Map[Int, (String, String)]): Set[(String, String)] = {
 
-    val idActor1 = findActorId(actor1.name, actor1.surname)
-    val idActor2 = findActorId(actor2.name, actor2.surname)
+    val idActor1 = findActorId(actor1.name, actor1.surname, cache_actor, cache_actor_indirect)
+    val idActor2 = findActorId(actor2.name, actor2.surname, cache_actor, cache_actor_indirect)
 
     val moviesActor1 = findActorMovies(idActor1.getOrElse(0))
     val moviesActor2 = findActorMovies(idActor2.getOrElse(0))

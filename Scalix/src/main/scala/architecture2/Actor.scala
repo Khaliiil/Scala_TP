@@ -68,5 +68,6 @@ class Actor(val name:String, val surname:String){
 }
 
 object Actor {
+
   val bruce = new Actor("Bruce", "Willis")
 }
