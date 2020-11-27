@@ -10,8 +10,8 @@ import java.io.PrintWriter
 import java.nio.file.{Paths, Files}
 
 object Finder extends App{
-  final val path_origin = "/home/IdeaProjects/Scaliix/Scala_TP/Scalix/src/data"
-  def findActorId(name: String, surname: String, cache_actor: collection.mutable.Map[FullName, Int], cache_actor_indirect: collection.mutable.Map[Int, FullName]): Option[Int] = {
+  final val path_origin = "C:\\Users\\Khalil Mahfoudh\\IdeaProjects\\Scalix\\src\\data\\"
+  def findActorId(name: String, surname: String, cache_actor: collection.mutable.Map[(String, String), Int], cache_actor_indirect: collection.mutable.Map[Int, (String, String)]): Option[Int] = {
     var id: Int = -1
     cache_actor.get((name, surname)) match {
       case None => {
@@ -38,13 +38,13 @@ object Finder extends App{
         out.write(JSON2)
         out.close()
       }
-    Some(id)
+      Some(id)
     } catch {
       case _: Exception => None
     }
   }
 
-  def findActorMovies(id: Int): Set[(Int, String)] = {
+  def findActorMovies(id: Int, cache_movies: ): Set[(Int, String)] = {
 
     var JSON = ""
     if (Files.exists(Paths.get(path_origin+"actor" + id.toString + ".txt"))){
@@ -100,7 +100,7 @@ object Finder extends App{
     }
   }
 
-  def request(actor1: FullName, actor2: FullName, cache_actor: collection.mutable.Map[FullName, Int], cache_actor_indirect: collection.mutable.Map[Int, FullName]): Set[FullName] = {
+  def request(actor1: FullName, actor2: FullName, cache_actor: collection.mutable.Map[(String, String), Int], cache_actor_indirect: collection.mutable.Map[Int, (String, String)]): Set[(String, String)] = {
 
     val idActor1 = findActorId(actor1.name, actor1.surname, cache_actor, cache_actor_indirect)
     val idActor2 = findActorId(actor2.name, actor2.surname, cache_actor, cache_actor_indirect)
@@ -108,7 +108,7 @@ object Finder extends App{
     val moviesActor1 = findActorMovies(idActor1.getOrElse(0))
     val moviesActor2 = findActorMovies(idActor2.getOrElse(0))
 
-    var ens: Set[FullName] = Set()
+    var ens: Set[(String, String)] = Set()
 
     for (i <- moviesActor1) {
       if (moviesActor2.contains(i)) {
