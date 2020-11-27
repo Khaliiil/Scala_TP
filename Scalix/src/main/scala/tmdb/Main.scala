@@ -8,8 +8,8 @@ import scala.io.Source
 object Main extends App {
   import Finder._
 
-  var cache_actor = collection.mutable.Map[(String, String), Int]()
-  var cache_actor_indirect = collection.mutable.Map[Int, (String, String)]();
+  var cache_actor = collection.mutable.Map[FullName, Int]()
+  var cache_actor_indirect = collection.mutable.Map[Int, FullName]();
   var cache_movies = collection.mutable.Map[Int, Set[(Int, String)]]()
 
   val content = Source.fromURL("https://api.themoviedb.org/3/person/3894?api_key=0a3f9b1422abb8a0284f388056b138de&language=en-US")

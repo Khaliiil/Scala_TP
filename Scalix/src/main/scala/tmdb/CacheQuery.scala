@@ -20,7 +20,7 @@ object CacheQuery {
     ans.toSet
   }
 
-  def queryPairOfActors2(cache_movies: collection.mutable.Map[Int, Set[(Int, String)]] , cache_actor_indirect: collection.mutable.Map[Int, (String, String)]): Set[((String, String), (String, String))] = {
+  def queryPairOfActors2(cache_movies: collection.mutable.Map[Int, Set[(Int, String)]] , cache_actor_indirect: collection.mutable.Map[Int, FullName]): Set[(FullName, FullName)] = {
     object pairOrdering extends Ordering[(Int, Int, Int)] {
       def compare(a:(Int, Int, Int), b:(Int, Int, Int)) = a._3 compare b._3
     }
