@@ -44,7 +44,7 @@ object Finder extends App{
     }
   }
 
-  def findActorMovies(id: Int, cache_movies: ): Set[(Int, String)] = {
+  def findActorMovies(id: Int, cache_movies: collection.mutable.Map[Int, Set[(Int, String)]]): Set[(Int, String)] = {
 
     var JSON = ""
     if (Files.exists(Paths.get(path_origin+"actor" + id.toString + ".txt"))){
@@ -67,7 +67,9 @@ object Finder extends App{
     for (i <- 1 until titres.length) {
       ens += ((Integer.parseInt(ids(i).values.toString), titres(i).values.toString))
     }
-
+    if (!cache_movies.contains(id)) {
+      cache_movies += (id -> ens)
+    }
     ens
   }
 
@@ -100,13 +102,13 @@ object Finder extends App{
     }
   }
 
-  def request(actor1: FullName, actor2: FullName, cache_actor: collection.mutable.Map[(String, String), Int], cache_actor_indirect: collection.mutable.Map[Int, (String, String)]): Set[(String, String)] = {
+  def request(actor1: FullName, actor2: FullName, cache_movies: collection.mutable.Map[Int, Set[(Int, String)]], cache_actor: collection.mutable.Map[(String, String), Int], cache_actor_indirect: collection.mutable.Map[Int, (String, String)]): Set[(String, String)] = {
 
     val idActor1 = findActorId(actor1.name, actor1.surname, cache_actor, cache_actor_indirect)
     val idActor2 = findActorId(actor2.name, actor2.surname, cache_actor, cache_actor_indirect)
 
-    val moviesActor1 = findActorMovies(idActor1.getOrElse(0))
-    val moviesActor2 = findActorMovies(idActor2.getOrElse(0))
+    val moviesActor1 = findActorMovies(idActor1.getOrElse(0), cache_movies)
+    val moviesActor2 = findActorMovies(idActor2.getOrElse(0), cache_movies)
 
     var ens: Set[(String, String)] = Set()
 

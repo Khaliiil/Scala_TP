@@ -20,7 +20,7 @@ object Main extends App {
   cache_actor += (("Leonardo", "DiCaprio") -> lis_1.head)
   println(cache_actor)
 
-  val lis_2 = findActorMovies(6193)
+  val lis_2 = findActorMovies(6193, )
   cache_movies += (6193 -> lis_2)
   println(cache_movies)
 
