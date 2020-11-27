@@ -28,14 +28,5 @@ object Main extends App {
   val lis_4 = request(FullName("Emma", "Stone"), FullName("Ryan", "Gosling"), cache_actor, cache_actor_indirect)
   println(lis_4)
 
-  object pairOrdering extends Ordering[(Int, Int, Int)] {
-    def compare(a:(Int, Int, Int), b:(Int, Int, Int)) = a._3 compare b._3
-  }
 
-  val pairOfActors = for ((id_actor1, films1) <- cache_movies;
-       (id_actor2, films2) <- cache_movies;
-       intersection = films1.intersect(films2).size
-       ) yield (id_actor1, id_actor2, intersection)
-  val maxFilmsTogether = pairOfActors.max(pairOrdering)._3
-  val ans = for ((id_actor1, id_actor2, len) <- pairOfActors if len == maxFilmsTogether) yield (cache_actor_indirect(id_actor1), cache_actor_indirect(id_actor2))
 }

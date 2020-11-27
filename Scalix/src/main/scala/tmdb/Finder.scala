@@ -10,7 +10,7 @@ import java.io.PrintWriter
 import java.nio.file.{Paths, Files}
 
 object Finder extends App{
-  final val path_origin = "C:\\Users\\Khalil Mahfoudh\\IdeaProjects\\Scalix\\src\\data\\"
+  final val path_origin = "/IdeaProjects/Scaliix/Scala_TP/Scalix/src/data"
   def findActorId(name: String, surname: String, cache_actor: collection.mutable.Map[(String, String), Int], cache_actor_indirect: collection.mutable.Map[Int, (String, String)]): Option[Int] = {
     var id: Int = -1
     cache_actor.get((name, surname)) match {
